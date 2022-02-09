@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDRIS Correction Auto Saving Script</title>
+</head>
+<body>
+    <pre>
+ let data;
+ if(localStorage.getItem("data")){
+   data = JSON.parse(localStorage.getItem("data"));
+     automation()
+     }
+     else{
+       data = [
+           {type: "input", id: "brSearchBrn", value: ""},
+               {type: "input", id: "brSearchDob", value: ""}
+                 ];
+                 }
+
+                 function automation(){
+                   data.forEach( function(value, index) {
+                       if(value.type == "input"){
+                             document.getElementById(value.id).value = value.value;
+                                 }
+                                   }
+                                     )
+                                     }
+
+                                     data.forEach( function(value, index) {
+                                       if(value.type == "input"){
+                                           document.getElementById(value.id).oninput = function() {
+                                                 data[index].value = this.value;
+                                                       localStorage.setItem("data", JSON.stringify(data));
+                                                           }
+                                                             }
+                                                             }
+                                                             )       
+    </pre>
+</body>
+</html>
