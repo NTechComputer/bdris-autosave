@@ -8,36 +8,70 @@
 </head>
 <body>
     <pre>
- let data;
- if(localStorage.getItem("data")){
-   data = JSON.parse(localStorage.getItem("data"));
-     automation()
-     }
-     else{
-       data = [
-           {type: "input", id: "brSearchBrn", value: ""},
-               {type: "input", id: "brSearchDob", value: ""}
-                 ];
-                 }
+let data;
+if (localStorage.getItem("correction")) {
+  data = JSON.parse(localStorage.getItem("correction"));
+  automation()
+} else {
+    data = [
+      {type: "step", step: 1},
+      {type: "nextPage"},
+      // First Step
+      {type: "input", id: "brSearchBrn", value: ""},
+      {type: "input", id: "brSearchDob", value: ""},
+      // Second Step
+      {type: "select", id: "officeAddrCountry", value: "-1", option: ""},
+      {type: "select", id: "officeAddrDiv", value: "-1", option: ""},
+      {type: "select", id: "officeAddrDist", value: "-1", option: ""},
+      {type: "select", id: "officeAddrCityCorpCantOrUpazila", value: "-1", option: ""},
+      {type: "select", id: "officeAddrPaurasavaOrUnion", value: "-1", option: ""},
+      {type: "class", class: "colDist"},
+      {type: "class", class: "colCityCorpCantOrUpazila"},
+      {type: "class", class: "colPaurasavaOrUnion"},
+    ];
+}
 
-                 function automation(){
-                   data.forEach( function(value, index) {
-                       if(value.type == "input"){
-                             document.getElementById(value.id).value = value.value;
-                                 }
-                                   }
-                                     )
-                                     }
+function automation() {
+  data.forEach(function(value, index) {
+    if (value.type == "input") {
+      document.getElementById(value.id).value = value.value;
+    }
+    if (value.type == "select") {
+      if(value.id != "officeAddrCountry" || value.id != "officeAddrDiv"){
+        let option = document.createElement("option");
+        option.setAttribute("value", value.value);
+        option.innerText = value.option;
+        document.getElementById(value.id).appendChild(option);
+      }
+      document.getElementById(value.id).value = value.value;
+    }
+    if (value.type == "class") {
+      document.getElementsByClassName(value.class)[0].style = "";
+      document.getElementsByClassName(value.class)[1].style = "";
+    }
+}
 
-                                     data.forEach( function(value, index) {
-                                       if(value.type == "input"){
-                                           document.getElementById(value.id).oninput = function() {
-                                                 data[index].value = this.value;
-                                                       localStorage.setItem("data", JSON.stringify(data));
-                                                           }
-                                                             }
-                                                             }
-                                                             )       
+data.forEach(function(value, index) {
+  if (value.type == "nextPage") {
+    document.getElementById(value.type).onclick = function() {
+      data[0].step = data[0].step++;
+      localStorage.setItem("correction", JSON.stringify(data));
+    }
+  }
+  if (value.type == "input") {
+    document.getElementById(value.id).oninput = function() {
+      data[index].value = this.value;
+      localStorage.setItem("correction", JSON.stringify(data));
+    }
+  }
+  if (value.type == "select") {
+    document.getElementById(value.id).onchange = function() {
+      data[index].value = this.value;
+      data[index].option = this.getElementsByTagName("option")[this.selectedIndex].innerText;
+      localStorage.setItem("correction", JSON.stringify(data));
+    }
+  }
+})                                                           )       
     </pre>
 </body>
 </html>
